@@ -9,9 +9,6 @@ spec:
   - port: 80
     name: http
     targetPort: 3100
-  # - port: 443
-  #   name: https
-  #   targetPort: 3100
   selector:
     app: account-login-manager
 ---
@@ -71,11 +68,11 @@ spec:
           name: sbp-port
         resources:
           requests:
-            cpu: "1"
-            memory: 256Mi
+            cpu: "0.5"
+            memory: 100Mi
           limits:
             cpu: "1"
-            memory: 512Mi
+            memory: 256Mi
         volumeMounts:
         - name: mongo-ca-certificate
           mountPath: "/etc/certs"
