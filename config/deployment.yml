@@ -71,7 +71,7 @@ spec:
             cpu: "0.1"
             memory: 100Mi
           limits:
-            cpu: "1"
+            cpu: "0.5"
             memory: 256Mi
         volumeMounts:
         - name: mongo-ca-certificate
