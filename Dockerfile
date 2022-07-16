@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY package*.json /app/
 COPY tsconfig*.json /app/
+COPY newrelic.js /app/
 
 RUN npm ci --quiet
 
@@ -18,6 +19,7 @@ WORKDIR /app
 COPY --from=prebuild /app/package*.json /app/
 RUN npm install --quiet --production
 COPY --from=prebuild /app/build /app/build
+COPY --from=prebuild /app/newrelic.js /app/build
 
 RUN apk --no-cache add curl
 RUN apk --no-cache add bash
