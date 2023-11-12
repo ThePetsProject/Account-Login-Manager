@@ -93,5 +93,42 @@ export const loginRoute: LoginRouteFnType = (
   router: Router,
   user: mongoose.Model<UserType>
 ): Router => {
+  /**
+   * @swagger
+   * /login:
+   *   post:
+   *     summary: Login user
+   *     description: Login user
+   *     requestBody:
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 description: User email
+   *               password:
+   *                 type: string
+   *                 description: User password
+   *             required:
+   *               - email
+   *               - password
+   *     responses:
+   *       '200':
+   *         description: User logged in
+   *       '400':
+   *         description: Bad request
+   *       '401':
+   *         description: Unauthorized
+   *       '404':
+   *         description: User not found
+   *       '500':
+   *         description: Internal server error
+   *     tags:
+   *       - Login
+   *     security:
+   *       - bearerAuth: []
+   */
   return router.post('/', (req, res) => loginHandler(user, req, res))
 }
