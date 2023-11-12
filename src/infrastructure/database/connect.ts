@@ -3,7 +3,7 @@ import fs from 'fs'
 
 export const mongoConnect = async (): Promise<string> => {
   const mongooseOptions: mongoose.ConnectOptions = {}
-  const mongoStrinfFilePath = process.env.MONGO_STRING_FILE_PATH
+  const mongoStrinfFilePath = process.env.VAULT_SECRETS_FILE_PATH
   const mongoString = fs
     .readFileSync(`${mongoStrinfFilePath}mongostring.txt`)
     .toString()
