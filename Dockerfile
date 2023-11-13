@@ -23,7 +23,7 @@ RUN npm install --quiet --production
 COPY --from=prebuild /app/build /app/build
 
 # PRODUCTION IMAGE - IMG_ENVIRONMENT=production
-FROM pre-final as img-production
+# FROM pre-final as img-production
 
 COPY --from=prebuild /app/newrelic.js /app/build
 
