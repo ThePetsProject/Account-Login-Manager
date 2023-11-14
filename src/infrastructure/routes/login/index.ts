@@ -21,8 +21,9 @@ export const loginHandler = async (
   res: Response
 ): Promise<Response> => {
   const { email, password } = req.body
+  const logPrefix = `[ACC-LOGIN-MANAGER][${email}]`
 
-  console.info(`[ACC-LOGIN-MANAGER] Trying login for ${email}`)
+  console.info(`${logPrefix} Trying login for ${email}`)
 
   const schema = Joi.object({
     email: Joi.string().email().required(),
@@ -32,9 +33,7 @@ export const loginHandler = async (
   const { error, value } = schema.validate({ email, password })
 
   if (error) {
-    console.error(
-      `[ACC-LOGIN-MANAGER][SCHEMA_ERROR][ERROR_MESSAGE] ${error.message}`
-    )
+    console.error(`${logPrefix}[SCHEMA_ERROR][ERROR_MESSAGE] ${error.message}`)
     return res.status(400).send()
   }
 
@@ -44,21 +43,27 @@ export const loginHandler = async (
 
   if (!userExists) {
     console.error(
-      `[ACC-LOGIN-MANAGER][USER_ERROR][USER_NOT_FOUND] User ${email} not found`
+      `${logPrefix}[USER_ERROR][USER_NOT_FOUND] User ${email} not found`
     )
     return res.status(404).send()
   }
+
+  console.info(`${logPrefix} User found. Checking password`)
 
   const pwdCheck = await userExists.checkPassword(password)
 
   if (!pwdCheck) {
     console.error(
-      `[ACC-LOGIN-MANAGER][USER_ERROR][WRONG_PASSWORD] Wrong password for ${email}`
+      `${logPrefix}[USER_ERROR][WRONG_PASSWORD] Wrong password for ${email}`
     )
     return res.status(401).send()
   }
 
+  console.info(`${logPrefix} User logged. Setting JWT`)
+
   const jwtUrl = `${process.env.JWT_MANAGER_URL}/${process.env.JWT_MANAGER_SET_PATH}`
+
+  console.info(`${logPrefix} Calling JWT Manager at ${jwtUrl}`)
 
   const axiosConfig = {
     method: 'post',
@@ -71,18 +76,15 @@ export const loginHandler = async (
     .request<JwtResponse>(axiosConfig)
     .then((response) => {
       const { accToken, refToken } = response.data
+      console.info(`${logPrefix} JWT set. Sending response`)
       return res.status(200).send({
         accToken,
         refToken,
       })
     })
     .catch((error: AxiosError) => {
-      console.error(
-        `[ACC-LOGIN-MANAGER][AXIOS_ERROR][ERROR_MESSAGE] ${error.message}`
-      )
-      console.error(
-        `[ACC-LOGIN-MANAGER][AXIOS_ERROR][ERROR_CODE] ${error.code}`
-      )
+      console.error(`${logPrefix}[AXIOS_ERROR][ERROR_MESSAGE] ${error.message}`)
+      console.error(`${logPrefix}[AXIOS_ERROR][ERROR_CODE] ${error.code}`)
       return res.status(500).send({
         message: error.message,
       })
